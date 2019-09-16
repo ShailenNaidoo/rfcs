@@ -1,26 +1,55 @@
-- Start Date: (fill me in with today's date, YYYY-MM-DD)
+- Start Date: 2019-09-16
 - Target Major Version: (2.x / 3.x)
 - Reference Issues: (fill in existing related issues, if any)
 - Implementation PR: (leave this empty)
 
 # Summary
 
-Brief explanation of the feature.
+A way to kill / remove event bindings if given a "falsy" value
 
 # Basic example
 
-If the proposal involves a new or changed API, include a basic code example.
-Omit this section if it's not applicable.
+```vue
+<button @click="null">Click Me!</button>
+
+<button v-on="{ input: null, change: null }">Click Me!</button>
+```
 
 # Motivation
 
-Why are we doing this? What use cases does it support? What is the expected
-outcome?
+When binding events to a component it would be great to remove the event if it is given a "falsy" value instead of throwing an error when not given a function.
 
-Please focus on explaining the motivation so that if this RFC is not accepted,
-the motivation could be used to develop alternative solutions. In other words,
-enumerate the constraints you are trying to solve without coupling them too
-closely to the solution you have in mind.
+It would come in handy when binding functions to events that can be undefined.
+
+**Without feature**
+
+```vue
+<template functional>
+  <button
+    v-on="{
+      input: props.inputHandler || (() => {}),
+      change: props.changeHandler || (() => {}),
+    }"
+  >
+    Click me
+  </button>
+</template>
+```
+
+**With feature**
+
+```vue
+<template functional>
+  <button
+    v-on="{
+      input: props.inputHandler,
+      change: props.changeHandler,
+    }"
+  >
+    Click me
+  </button>
+</template>
+```
 
 # Detailed design
 
